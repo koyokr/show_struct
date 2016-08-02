@@ -6,5 +6,5 @@
 
 ## Usage
 ```
-./show_struct [structure name]
+python show_struct.py [structure name]
 ```

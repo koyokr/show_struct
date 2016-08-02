@@ -18,7 +18,19 @@ def page(url, string):
 	plain = "".join(soup.findAll(text=True))
 	index = plain.find('struct '+string+' {')
 	if index != -1:
-		index2 = index + plain[index:].find('}') + 1
+		length = 9 + len(string)
+		index2 = index + length
+		n1 = plain[index2:].find('{')
+		n2 = plain[index2:].find('}')
+		index2 += n2 + 1
+		if n1 < n2 and n1 != -1:
+			while True:
+				n1 = plain[index2:].find('{')
+				n2 = plain[index2:].find('}')
+				index2 += n2 + 1
+				if n1 > n2 or n1 == -1:
+					index2 += 1
+					break;
 		print(url)
 		print(plain[index:index2])
 

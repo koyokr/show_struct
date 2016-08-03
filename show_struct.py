@@ -10,13 +10,15 @@ slist = list()
 number = 0
 
 def google(string):
-	url = "https://www.google.com/search?q=\"struct+" + string + "+{\"&num=20"
+	url = "https://www.google.com/search?num=20&q=\"struct+" + string + "+{\""
 	print("Searching...")
 	if search(url, string) == False:
-		url += "&start=20&"
+		url += "+header"
 		print("Searching... more...")
 		if search(url, string) == False:
-			print("Not found "+string+" structure")
+			print("Sorry, Not found "+string+" structure")
+			return
+	print("\nThank you!")
 
 def search(url, string):
 	code = requests.get(url).text
@@ -26,7 +28,8 @@ def search(url, string):
 		if url.find("/url?") == 0:
 			page(url.split("?q=")[1].split("&sa")[0], string)
 		else:
-			page(url, string)
+			if url.find("books.google") == -1:
+				page(url, string)
 	if len(slist) > 0:
 		stuple = Counter(slist).most_common(1)[0]
 		if stuple[1] > 1:
@@ -39,10 +42,15 @@ def search(url, string):
 def page(url, string):
 	try:
 		code = requests.get(url).text
-	except requests.exceptions.ConnectionError:
+	except:
 		return
 	soup = BeautifulSoup(code, "lxml")
 	plain = "".join(soup.findAll(text=True))
+
+	global number
+	number += 1
+	print("["+repr(number)+"] "+url)
+
 	index = plain.find("struct "+string+" {")
 	if index == -1:
 		index = plain.find("struct "+string+"\n{")
@@ -50,10 +58,6 @@ def page(url, string):
 			index = plain.find("struct "+string+"{")
 			if index == -1:
 				return
-
-	global number
-	number += 1
-	print("["+repr(number)+"] "+url)
 
 	plain = plain[index:]
 	index = len(string) + 9

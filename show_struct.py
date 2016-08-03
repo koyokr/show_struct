@@ -18,7 +18,8 @@ def google(string):
 		if search(url, string) == False:
 			print("Sorry, Not found "+string+" structure")
 			return
-	print("\nThank you!")
+	global number
+	print("\n[*] Total - "+repr(number))
 
 def search(url, string):
 	code = requests.get(url).text

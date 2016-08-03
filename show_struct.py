@@ -8,6 +8,7 @@ from collections import Counter
 
 slist = list()
 number = 0
+result = 0
 
 def google(string):
 	url = "https://www.google.com/search?num=20&q=\"struct+" + string + "+{\""
@@ -18,8 +19,12 @@ def google(string):
 		if search(url, string) == False:
 			print("Sorry, Not found "+string+" structure")
 			return
-	global number
-	print("\n[*] Total - "+repr(number))
+	global number, slist
+	print("\n[*] Total - "+repr(result))
+	stuple = Counter(slist).most_common(1)[0]
+	if stuple[1] > 1:
+		print("[*] Recommand - "+repr(stuple[1]))
+		print(stuple[0])
 
 def search(url, string):
 	code = requests.get(url).text
@@ -32,10 +37,6 @@ def search(url, string):
 			if url.find("books.google") == -1:
 				page(url, string)
 	if len(slist) > 0:
-		stuple = Counter(slist).most_common(1)[0]
-		if stuple[1] > 1:
-			print("\n[*] Recommand - "+repr(stuple[1]))
-			print(stuple[0])
 		return True
 	else:
 		return False
@@ -88,6 +89,8 @@ def page(url, string):
 		struct = struct.replace(struct[index+n1+1:index+n2-1], "")
 		index += n1 + 1
 	#print(struct)
+	global result
+	result += 1
 	global slist
 	slist.append(struct)
 
